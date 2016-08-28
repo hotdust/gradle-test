@@ -1,0 +1,58 @@
+// 学习资料网址：http://wiki.jikexueyuan.com/project/gradle/build-script-basics.html
+apply plugin: 'java'
+// 基本例子
+task hello << {
+    String someStr = "my string"
+    println "Original:" + someStr
+    println "Upper case:" + someStr.toUpperCase();
+}
+
+task count << {
+    4.times { println "$it" }
+}
+
+// 依赖例子
+task intro(dependsOn:hello) << { println "I'm Gradle" }
+
+// 延迟依赖
+task taskX(dependsOn: 'taskY') << { println 'taskX'; }
+
+task taskY() << { println 'taskY'; }
+
+// 动态创建任务(从0开始计算)
+4.times { counter->
+    task "task$counter" << { println "I'm task number $counter"; }
+}
+
+// 增加任务行为。因为上面定义完了hello Task，所以这里可以直接使用Task，进行给Task添加其它属性。
+hello.doFirst { println 'hello do first' }
+hello.doLast { println 'hello do last' }
+hello << { print "hello <<"; }
+
+// 为任务增加自定义属性。在任务里定义的属性，在使用时，必须使用任务名作为前缀。
+task myTask { ext.myProperty = "myValue"; }
+task printTaskProperty << { println myTask.myProperty }
+
+// 设置默认任务。调用时： gradle -q
+defaultTasks 'hello'
+
+// 查看变量
+task displayProperties << {
+    //        project.name = "Gradle project name"
+    println "the current task name is $name"
+//    assert "$name" == "displayProperties"
+    version =  '0.1.0'
+    println "Version: $version"
+    //    ext.myProperty1 = "myValue1"
+    //    println displayProperties.myProperty1
+}
+
+
+
+
+
+
+
+
+
+
